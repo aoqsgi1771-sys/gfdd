@@ -30,7 +30,7 @@
 
     <header class="bg-gradient-to-r from-primary to-secondary text-white p-5 shadow-lg rounded-b-3xl sticky top-0 z-30 flex justify-between items-center">
         <h1 class="text-2xl font-bold drop-shadow-md"><i class="fa-solid fa-leaf text-teal-200 ml-2"></i>جمعية المؤمل</h1>
-        <button onclick="openModal('settingsModal')" class="bg-white/20 hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition active:scale-95 shadow-sm">
+        <button type="button" onclick="openModal('settingsModal')" class="bg-white/20 hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition active:scale-95 shadow-sm">
             <i class="fa-solid fa-gear text-lg"></i>
         </button>
     </header>
@@ -57,7 +57,7 @@
 
             <div class="flex justify-between items-center mb-5">
                 <h2 class="text-xl font-bold text-primary">الزبائن</h2>
-                <button onclick="openModal('customerModal')" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
+                <button type="button" onclick="openModal('customerModal')" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
                     <i class="fa-solid fa-user-plus"></i> إضافة زبون
                 </button>
             </div>
@@ -73,7 +73,7 @@
         <section id="tab-inventory" class="tab-section hidden">
             <div class="flex justify-between items-center mb-5">
                 <h2 class="text-xl font-bold text-primary">المخزون</h2>
-                <button onclick="openModal('inventoryModal')" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
+                <button type="button" onclick="openModal('inventoryModal')" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
                     <i class="fa-solid fa-box-open"></i> إضافة مادة
                 </button>
             </div>
@@ -107,7 +107,7 @@
 
                     <div><label class="block text-sm font-bold text-slate-600 mb-1">السعر (د.ع)</label><input type="text" id="ds-price" class="custom-input money-input font-bold" dir="ltr" placeholder="أدخل السعر يدوياً"></div>
                     <div><label class="block text-sm font-bold text-slate-600 mb-1">ملاحظات</label><input type="text" id="ds-notes" class="custom-input"></div>
-                    <button onclick="saveDirectSale()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 mt-2">حفظ البيع</button>
+                    <button type="button" onclick="saveDirectSale()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 mt-2">حفظ البيع</button>
                 </div>
             </div>
 
@@ -122,7 +122,7 @@
                         <option value="10">شهر 10</option><option value="11">شهر 11</option><option value="12">شهر 12</option>
                     </select>
                 </div>
-                <button onclick="clearDirectSales()" class="bg-red-50 text-red-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition"><i class="fa-solid fa-trash-can ml-1"></i> تصفير</button>
+                <button type="button" onclick="clearDirectSales()" class="bg-red-50 text-red-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition"><i class="fa-solid fa-trash-can ml-1"></i> تصفير</button>
             </div>
             <div class="bg-dark text-white p-3 rounded-xl mb-4 text-center shadow-md">إجمالي المبيعات المفلترة: <span id="ds-total-sales" class="font-black text-xl" dir="ltr">0</span></div>
             <div id="dsList" class="flex flex-col gap-3"></div>
@@ -141,12 +141,12 @@
                     </select>
                 </div>
                 <div class="bg-dark text-white p-3 rounded-xl mb-4 text-center shadow-md">أرباح هذا الشهر / الكل: <span id="ms-total-profits" class="font-black text-xl" dir="ltr">0</span></div>
-                <button onclick="clearMonthlySales()" class="w-full bg-red-50 text-red-500 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition"><i class="fa-solid fa-trash-can ml-1"></i> تصفير الأرباح جميعها</button>
+                <button type="button" onclick="clearMonthlySales()" class="w-full bg-red-50 text-red-500 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition"><i class="fa-solid fa-trash-can ml-1"></i> تصفير الأرباح جميعها</button>
             </div>
 
             <div class="flex justify-between items-center mb-5">
                 <h2 class="text-xl font-bold text-primary">البيع الشهري</h2>
-                <button onclick="openMonthlySaleModal()" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
+                <button type="button" onclick="openMonthlySaleModal()" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
                     <i class="fa-solid fa-plus"></i> إضافة عملية بيع
                 </button>
             </div>
@@ -157,20 +157,20 @@
 
     <nav class="fixed bottom-0 w-full bg-white shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-3xl z-30 border-t border-slate-100">
         <div class="flex justify-around items-center p-2">
-            <button onclick="switchTab('customers', this)" class="nav-btn active flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+            <button type="button" onclick="switchTab('customers', this)" class="nav-btn active flex flex-col items-center p-2 w-1/5 transition text-slate-400">
                 <i class="fa-solid fa-users text-2xl mb-1"></i><span class="text-[10px] font-bold">الزبائن</span>
             </button>
-            <button onclick="switchTab('inventory', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+            <button type="button" onclick="switchTab('inventory', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
                 <i class="fa-solid fa-boxes-stacked text-2xl mb-1"></i><span class="text-[10px] font-bold">المخزون</span>
             </button>
-            <button onclick="switchTab('alerts', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400 relative">
+            <button type="button" onclick="switchTab('alerts', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400 relative">
                 <i class="fa-solid fa-triangle-exclamation text-2xl mb-1"></i><span class="text-[10px] font-bold">التنبيهات</span>
                 <span id="alertBadge" class="absolute top-1 right-4 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
             </button>
-            <button onclick="switchTab('directsale', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+            <button type="button" onclick="switchTab('directsale', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
                 <i class="fa-solid fa-store text-2xl mb-1"></i><span class="text-[10px] font-bold">بيع مباشر</span>
             </button>
-            <button onclick="switchTab('monthlysale', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+            <button type="button" onclick="switchTab('monthlysale', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
                 <i class="fa-solid fa-calendar-days text-2xl mb-1"></i><span class="text-[10px] font-bold">البيع الشهري</span>
             </button>
         </div>
@@ -180,10 +180,10 @@
         <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
             <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
                 <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-sliders text-primary ml-2"></i>الإعدادات</h3>
-                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-4">
-                <button onclick="downloadBackup()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 rounded-xl shadow-sm hover:bg-slate-100 transition flex items-center justify-center gap-2">
+                <button type="button" onclick="downloadBackup()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 rounded-xl shadow-sm hover:bg-slate-100 transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-download text-primary"></i> تنزيل نسخة احتياطية
                 </button>
                 <div class="relative">
@@ -205,7 +205,7 @@
         <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
             <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
                 <h3 class="text-xl font-bold text-primary" id="customerModalTitle">إضافة زبون</h3>
-                <button onclick="closeModal('customerModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeModal('customerModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
                 <input type="hidden" id="c-id">
@@ -218,7 +218,7 @@
                 <div><label class="block text-sm font-bold text-slate-600 mb-1">تاريخ الشراء</label><input type="date" id="c-date" class="custom-input"></div>
                 <div><label class="block text-sm font-bold text-slate-600 mb-1">أيام التنبيه (تجاوز المدة)</label><input type="number" id="c-alert" class="custom-input" placeholder="مثال: 30"></div>
             </div>
-            <button onclick="saveCustomer()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-5">حفظ البيانات</button>
+            <button type="button" onclick="saveCustomer()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-5">حفظ البيانات</button>
         </div>
     </div>
 
@@ -226,7 +226,7 @@
         <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
             <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
                 <h3 class="text-xl font-bold text-primary" id="inventoryModalTitle">إضافة مادة</h3>
-                <button onclick="closeModal('inventoryModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeModal('inventoryModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-4">
                 <input type="hidden" id="i-id">
@@ -236,14 +236,14 @@
                     <div class="flex-1"><label class="block text-sm font-bold text-slate-600 mb-1">سعر البيع (د.ع)</label><input type="text" id="i-sell" class="custom-input money-input" dir="ltr"></div>
                 </div>
                 <div><label class="block text-sm font-bold text-slate-600 mb-1">العدد</label><input type="number" id="i-qty" class="custom-input"></div>
-                <button onclick="saveInventory()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4">حفظ المادة</button>
+                <button type="button" onclick="saveInventory()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4">حفظ المادة</button>
             </div>
         </div>
     </div>
 
     <div id="detailsModal" class="fixed inset-0 bg-slate-50 z-40 hidden flex-col transform translate-y-full transition-transform duration-400 ease-in-out">
         <header class="bg-primary text-white p-4 shadow-md flex items-center gap-4">
-            <button onclick="closeDetails()" class="text-xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/20 transition active:scale-90"><i class="fa-solid fa-arrow-right"></i></button>
+            <button type="button" onclick="closeDetails()" class="text-xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/20 transition active:scale-90"><i class="fa-solid fa-arrow-right"></i></button>
             <h2 class="text-xl font-bold flex-1 truncate" id="d-name">اسم الزبون</h2>
         </header>
         <div class="flex-1 overflow-y-auto p-4 pb-24">
@@ -252,8 +252,8 @@
                 <p class="text-white/80 text-sm font-bold mb-1">المتبقي في ذمته</p>
                 <h3 class="text-4xl font-black mb-6 tracking-wider" id="d-balance" dir="ltr">0</h3>
                 <div class="flex gap-3 relative z-10">
-                    <button onclick="openSellModal()" class="flex-1 bg-white text-primary font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-cart-plus"></i> بيع مادة</button>
-                    <button onclick="openPayModal()" class="flex-1 bg-dark text-white font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-money-bill-wave"></i> تسديد</button>
+                    <button type="button" onclick="openSellModal()" class="flex-1 bg-white text-primary font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-cart-plus"></i> بيع مادة</button>
+                    <button type="button" onclick="openPayModal()" class="flex-1 bg-dark text-white font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-money-bill-wave"></i> تسديد</button>
                 </div>
             </div>
             <h3 class="font-bold text-slate-700 mb-3 text-lg flex items-center gap-2 border-b border-slate-200 pb-2"><i class="fa-solid fa-clock-rotate-left text-primary"></i> سجل المعاملات</h3>
@@ -265,7 +265,7 @@
         <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 shadow-2xl transform translate-y-full sm:scale-95 transition-transform duration-300 modal-box-slide">
             <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
                 <h3 class="text-xl font-bold text-primary"><i class="fa-solid fa-cart-shopping ml-2"></i>إضافة للزبون (بيع)</h3>
-                <button onclick="closeModal('sellModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeModal('sellModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-4">
                 <div class="relative z-50">
@@ -293,7 +293,7 @@
                     </div>
                 </div>
 
-                <button onclick="confirmSell()" class="w-full bg-primary text-white font-bold text-lg py-3 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4 flex justify-center items-center gap-2">
+                <button type="button" onclick="confirmSell()" class="w-full bg-primary text-white font-bold text-lg py-3 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4 flex justify-center items-center gap-2">
                     <i class="fa-solid fa-plus"></i> إضافة للسجل
                 </button>
             </div>
@@ -304,7 +304,7 @@
         <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 shadow-2xl transform translate-y-full sm:scale-95 transition-transform duration-300 modal-box-slide">
             <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
                 <h3 class="text-xl font-bold text-primary"><i class="fa-solid fa-money-bill-wave ml-2"></i>تسديد دفعة</h3>
-                <button onclick="closeModal('payModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeModal('payModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="text-center mb-6 bg-slate-50 py-4 rounded-2xl border border-slate-100">
                 <p class="text-slate-500 text-sm font-bold mb-1">المتبقي عليه حالياً</p>
@@ -314,7 +314,7 @@
                 <label class="block text-center text-sm font-bold text-slate-600 mb-2">أدخل رقم المبلغ (دينار عراقي)</label>
                 <input type="text" id="p-amount" class="custom-input text-center text-3xl font-bold text-primary py-4 money-input" placeholder="0" dir="ltr">
             </div>
-            <button onclick="confirmPay()" class="w-full bg-dark text-white font-bold text-lg py-3.5 rounded-xl shadow-lg hover:bg-primary transition active:scale-95 flex justify-center items-center gap-2">
+            <button type="button" onclick="confirmPay()" class="w-full bg-dark text-white font-bold text-lg py-3.5 rounded-xl shadow-lg hover:bg-primary transition active:scale-95 flex justify-center items-center gap-2">
                 <i class="fa-solid fa-check"></i> تأكيد التسديد
             </button>
         </div>
@@ -324,7 +324,7 @@
         <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
             <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
                 <h3 class="text-xl font-bold text-primary" id="monthlySaleModalTitle">إضافة عملية بيع</h3>
-                <button onclick="closeModal('monthlySaleModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeModal('monthlySaleModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
                 <input type="hidden" id="ms-id">
@@ -342,7 +342,7 @@
                     <input type="hidden" id="ms-item-id">
                 </div>
 
-                <button onclick="saveMonthlySale()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4">حفظ</button>
+                <button type="button" onclick="saveMonthlySale()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4">حفظ</button>
             </div>
         </div>
     </div>
@@ -353,8 +353,8 @@
             <h3 class="text-xl font-bold text-slate-800 mb-2">تثبيت التطبيق</h3>
             <p class="text-slate-500 text-sm font-bold mb-6">قم بتثبيت التطبيق على جهازك للوصول السريع والعمل دون إنترنت.</p>
             <div class="flex gap-3">
-                <button onclick="installPWA()" class="flex-1 bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition active:scale-95">تثبيت الآن</button>
-                <button onclick="closeInstallOverlay()" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-200 transition">لاحقاً</button>
+                <button type="button" onclick="installPWA()" class="flex-1 bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition active:scale-95">تثبيت الآن</button>
+                <button type="button" onclick="closeInstallOverlay()" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-200 transition">لاحقاً</button>
             </div>
         </div>
     </div>
@@ -362,14 +362,14 @@
     <div id="authOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl">
             <h2 class="text-2xl font-bold text-primary mb-6"><i class="fa-solid fa-leaf text-teal-200 ml-2"></i>جمعية المؤمل</h2>
-            <button id="googleLoginBtn" class="w-full bg-red-500 text-white font-bold py-3 rounded-xl shadow-md hover:bg-red-600 transition flex justify-center items-center gap-2">
+            <button type="button" id="googleLoginBtn" class="w-full bg-red-500 text-white font-bold py-3 rounded-xl shadow-md hover:bg-red-600 transition flex justify-center items-center gap-2">
                 <i class="fa-brands fa-google"></i> تسجيل الدخول عبر جوجل
             </button>
             
             <div id="pinSection" class="hidden mt-6 pt-6 border-t border-slate-100">
                 <label class="block text-sm font-bold text-slate-600 mb-2">أدخل رمز الدخول</label>
                 <input type="password" id="pinInput" class="custom-input text-center text-2xl tracking-[1em]" maxlength="4">
-                <button id="verifyPinBtn" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition mt-4">
+                <button type="button" id="verifyPinBtn" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition mt-4">
                     تحقق
                 </button>
             </div>
@@ -441,7 +441,12 @@
       onAuthStateChanged(auth, (user) => {
           if (user) {
               googleLoginBtn.classList.add('hidden');
-              pinSection.classList.remove('hidden');
+              if(sessionStorage.getItem('pinVerified') === 'true') {
+                  authOverlay.classList.add('hidden');
+                  if(window.initAppAfterAuth) window.initAppAfterAuth();
+              } else {
+                  pinSection.classList.remove('hidden');
+              }
           } else {
               authOverlay.classList.remove('hidden');
               googleLoginBtn.classList.remove('hidden');
@@ -451,6 +456,7 @@
 
       verifyPinBtn.addEventListener('click', async () => {
           if(pinInput.value === '1001') {
+              sessionStorage.setItem('pinVerified', 'true');
               try {
                   const docSnap = await getDoc(doc(db, "appData", "mainData"));
                   if(docSnap.exists()) {
