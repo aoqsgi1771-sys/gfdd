@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جمعية المؤمل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    colors: { 
+                        primary: '#0f766e',
+                        secondary: '#0d9488', 
+                        light: '#f0fdfa', 
+                        dark: '#134e4a' 
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-cairo text-slate-800 pb-20 overflow-x-hidden antialiased">
+
+    <header class="bg-gradient-to-r from-primary to-secondary text-white p-5 shadow-lg rounded-b-3xl sticky top-0 z-30 flex justify-between items-center">
+        <h1 class="text-2xl font-bold drop-shadow-md"><i class="fa-solid fa-leaf text-teal-200 ml-2"></i>جمعية المؤمل</h1>
+        <button onclick="openModal('settingsModal')" class="bg-white/20 hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition active:scale-95 shadow-sm">
+            <i class="fa-solid fa-gear text-lg"></i>
+        </button>
+    </header>
+
+    <main class="p-4" id="main-content">
+        <section id="tab-customers" class="tab-section active">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-5">
+                <div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+                    <h3 class="font-bold text-slate-700"><i class="fa-solid fa-chart-pie text-primary ml-1"></i> الكشف والجرد الشهري</h3>
+                    <select id="customerMonthFilter" onchange="renderCustomerMonthlySummary()" class="custom-input w-auto py-1 px-2 text-sm">
+                        <option value="0">الكل</option>
+                        <option value="1">شهر 1</option><option value="2">شهر 2</option><option value="3">شهر 3</option>
+                        <option value="4">شهر 4</option><option value="5">شهر 5</option><option value="6">شهر 6</option>
+                        <option value="7">شهر 7</option><option value="8">شهر 8</option><option value="9">شهر 9</option>
+                        <option value="10">شهر 10</option><option value="11">شهر 11</option><option value="12">شهر 12</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[10px] text-slate-500 font-bold mb-1">المباع</p><p class="text-sm font-black text-slate-800" id="stat-sold" dir="ltr">0</p></div>
+                    <div class="bg-light p-2 rounded-xl border border-teal-100"><p class="text-[10px] text-primary font-bold mb-1">المستلم</p><p class="text-sm font-black text-primary" id="stat-paid" dir="ltr">0</p></div>
+                    <div class="bg-red-50 p-2 rounded-xl border border-red-100"><p class="text-[10px] text-red-500 font-bold mb-1">الديون الباقية</p><p class="text-sm font-black text-red-600" id="stat-debt" dir="ltr">0</p></div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-xl font-bold text-primary">الزبائن</h2>
+                <button onclick="openModal('customerModal')" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
+                    <i class="fa-solid fa-user-plus"></i> إضافة زبون
+                </button>
+            </div>
+            
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" class="custom-input pr-10" placeholder="ابحث عن زبون..." oninput="searchCustomers(this.value)" autocomplete="off">
+            </div>
+
+            <div id="customersList" class="flex flex-col gap-3"></div>
+        </section>
+
+        <section id="tab-inventory" class="tab-section hidden">
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-xl font-bold text-primary">المخزون</h2>
+                <button onclick="openModal('inventoryModal')" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
+                    <i class="fa-solid fa-box-open"></i> إضافة مادة
+                </button>
+            </div>
+            <div id="inventoryList" class="flex flex-col gap-3"></div>
+        </section>
+
+        <section id="tab-alerts" class="tab-section hidden">
+            <div class="mb-5">
+                <h2 class="text-xl font-bold text-red-600 flex items-center gap-2"><i class="fa-solid fa-bell animate-pulse"></i> التنبيهات</h2>
+                <p class="text-xs text-slate-500 font-bold mt-1">الزبائن الذين تجاوزوا المدة المحددة</p>
+            </div>
+            <div id="alertsList" class="flex flex-col gap-3"></div>
+        </section>
+
+        <section id="tab-directsale" class="tab-section hidden">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-5">
+                <h3 class="font-bold text-primary mb-4 border-b border-slate-100 pb-2"><i class="fa-solid fa-cart-plus ml-1"></i> إضافة بيع مباشر</h3>
+                <div class="space-y-3">
+                    <div><label class="block text-sm font-bold text-slate-600 mb-1">اسم الزبون</label><input type="text" id="ds-c-name" class="custom-input"></div>
+                    <div><label class="block text-sm font-bold text-slate-600 mb-1">رقم الهاتف</label><input type="tel" id="ds-phone" class="custom-input"></div>
+                    
+                    <div class="relative z-40">
+                        <label class="block text-sm font-bold text-slate-600 mb-1">اسم المادة (أكتب للبحث في المخزون)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="ds-search" class="custom-input pr-10" placeholder="ابحث عن مادة..." oninput="searchDsInventory(this.value)" autocomplete="off">
+                        </div>
+                        <div id="ds-dropdown" class="absolute w-full bg-white shadow-xl rounded-xl mt-1 border border-slate-100 max-h-48 overflow-y-auto hidden"></div>
+                        <input type="hidden" id="ds-item-id">
+                    </div>
+
+                    <div><label class="block text-sm font-bold text-slate-600 mb-1">السعر (د.ع)</label><input type="text" id="ds-price" class="custom-input money-input font-bold" dir="ltr" placeholder="أدخل السعر يدوياً"></div>
+                    <div><label class="block text-sm font-bold text-slate-600 mb-1">ملاحظات</label><input type="text" id="ds-notes" class="custom-input"></div>
+                    <button onclick="saveDirectSale()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 mt-2">حفظ البيع</button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-xl font-bold text-slate-800">مبيعات الشهر</h2>
+                    <select id="dsMonthFilterList" onchange="renderDirectSales()" class="custom-input w-auto py-1 px-2 text-sm">
+                        <option value="0">الكل</option>
+                        <option value="1">شهر 1</option><option value="2">شهر 2</option><option value="3">شهر 3</option>
+                        <option value="4">شهر 4</option><option value="5">شهر 5</option><option value="6">شهر 6</option>
+                        <option value="7">شهر 7</option><option value="8">شهر 8</option><option value="9">شهر 9</option>
+                        <option value="10">شهر 10</option><option value="11">شهر 11</option><option value="12">شهر 12</option>
+                    </select>
+                </div>
+                <button onclick="clearDirectSales()" class="bg-red-50 text-red-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition"><i class="fa-solid fa-trash-can ml-1"></i> تصفير</button>
+            </div>
+            <div class="bg-dark text-white p-3 rounded-xl mb-4 text-center shadow-md">إجمالي المبيعات المفلترة: <span id="ds-total-sales" class="font-black text-xl" dir="ltr">0</span></div>
+            <div id="dsList" class="flex flex-col gap-3"></div>
+        </section>
+
+        <section id="tab-monthlysale" class="tab-section hidden">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-5">
+                <div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+                    <h3 class="font-bold text-slate-700"><i class="fa-solid fa-chart-line text-primary ml-1"></i> جرد المبيعات</h3>
+                    <select id="msMonthFilterList" onchange="renderMonthlySales()" class="custom-input w-auto py-1 px-2 text-sm">
+                        <option value="0">الكل</option>
+                        <option value="1">شهر 1</option><option value="2">شهر 2</option><option value="3">شهر 3</option>
+                        <option value="4">شهر 4</option><option value="5">شهر 5</option><option value="6">شهر 6</option>
+                        <option value="7">شهر 7</option><option value="8">شهر 8</option><option value="9">شهر 9</option>
+                        <option value="10">شهر 10</option><option value="11">شهر 11</option><option value="12">شهر 12</option>
+                    </select>
+                </div>
+                <div class="bg-dark text-white p-3 rounded-xl mb-4 text-center shadow-md">أرباح هذا الشهر / الكل: <span id="ms-total-profits" class="font-black text-xl" dir="ltr">0</span></div>
+                <button onclick="clearMonthlySales()" class="w-full bg-red-50 text-red-500 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition"><i class="fa-solid fa-trash-can ml-1"></i> تصفير الأرباح جميعها</button>
+            </div>
+
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-xl font-bold text-primary">البيع الشهري</h2>
+                <button onclick="openMonthlySaleModal()" class="bg-primary text-white px-4 py-2 rounded-xl shadow-md hover:bg-secondary transition active:scale-95 flex items-center gap-2 text-sm font-bold">
+                    <i class="fa-solid fa-plus"></i> إضافة عملية بيع
+                </button>
+            </div>
+            
+            <div id="monthlySaleList" class="flex flex-col gap-3"></div>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-3xl z-30 border-t border-slate-100">
+        <div class="flex justify-around items-center p-2">
+            <button onclick="switchTab('customers', this)" class="nav-btn active flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+                <i class="fa-solid fa-users text-2xl mb-1"></i><span class="text-[10px] font-bold">الزبائن</span>
+            </button>
+            <button onclick="switchTab('inventory', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+                <i class="fa-solid fa-boxes-stacked text-2xl mb-1"></i><span class="text-[10px] font-bold">المخزون</span>
+            </button>
+            <button onclick="switchTab('alerts', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400 relative">
+                <i class="fa-solid fa-triangle-exclamation text-2xl mb-1"></i><span class="text-[10px] font-bold">التنبيهات</span>
+                <span id="alertBadge" class="absolute top-1 right-4 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+            </button>
+            <button onclick="switchTab('directsale', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+                <i class="fa-solid fa-store text-2xl mb-1"></i><span class="text-[10px] font-bold">بيع مباشر</span>
+            </button>
+            <button onclick="switchTab('monthlysale', this)" class="nav-btn flex flex-col items-center p-2 w-1/5 transition text-slate-400">
+                <i class="fa-solid fa-calendar-days text-2xl mb-1"></i><span class="text-[10px] font-bold">البيع الشهري</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="settingsModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
+                <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-sliders text-primary ml-2"></i>الإعدادات</h3>
+                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <button onclick="downloadBackup()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 rounded-xl shadow-sm hover:bg-slate-100 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download text-primary"></i> تنزيل نسخة احتياطية
+                </button>
+                <div class="relative">
+                    <input type="file" id="restoreFile" accept=".json" onchange="restoreBackup(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <div class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 rounded-xl shadow-sm hover:bg-slate-100 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-upload text-secondary"></i> رفع نسخة احتياطية
+                    </div>
+                </div>
+                <div class="border-t border-slate-100 pt-4 mt-2">
+                    <a href="https://t.me/am_an12" target="_blank" class="w-full bg-[#0088cc] text-white font-bold py-3 rounded-xl shadow-md hover:bg-[#0077b3] transition flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-telegram text-xl"></i> تواصل مع المطور للدعم
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="customerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
+                <h3 class="text-xl font-bold text-primary" id="customerModalTitle">إضافة زبون</h3>
+                <button onclick="closeModal('customerModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
+                <input type="hidden" id="c-id">
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">اسم الزبون</label><input type="text" id="c-name" class="custom-input"></div>
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">رقم الزبون</label><input type="tel" id="c-phone" class="custom-input"></div>
+                <div class="flex gap-3">
+                    <div class="flex-1"><label class="block text-sm font-bold text-slate-600 mb-1">الكفيل</label><input type="text" id="c-guarantor" class="custom-input"></div>
+                    <div class="flex-1"><label class="block text-sm font-bold text-slate-600 mb-1">رقم الكفيل</label><input type="tel" id="c-gphone" class="custom-input"></div>
+                </div>
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">تاريخ الشراء</label><input type="date" id="c-date" class="custom-input"></div>
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">أيام التنبيه (تجاوز المدة)</label><input type="number" id="c-alert" class="custom-input" placeholder="مثال: 30"></div>
+            </div>
+            <button onclick="saveCustomer()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-5">حفظ البيانات</button>
+        </div>
+    </div>
+
+    <div id="inventoryModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
+                <h3 class="text-xl font-bold text-primary" id="inventoryModalTitle">إضافة مادة</h3>
+                <button onclick="closeModal('inventoryModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <input type="hidden" id="i-id">
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">اسم المنتج</label><input type="text" id="i-name" class="custom-input"></div>
+                <div class="flex gap-3">
+                    <div class="flex-1"><label class="block text-sm font-bold text-slate-600 mb-1">سعر الشراء (د.ع)</label><input type="text" id="i-buy" class="custom-input money-input" dir="ltr"></div>
+                    <div class="flex-1"><label class="block text-sm font-bold text-slate-600 mb-1">سعر البيع (د.ع)</label><input type="text" id="i-sell" class="custom-input money-input" dir="ltr"></div>
+                </div>
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">العدد</label><input type="number" id="i-qty" class="custom-input"></div>
+                <button onclick="saveInventory()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4">حفظ المادة</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="fixed inset-0 bg-slate-50 z-40 hidden flex-col transform translate-y-full transition-transform duration-400 ease-in-out">
+        <header class="bg-primary text-white p-4 shadow-md flex items-center gap-4">
+            <button onclick="closeDetails()" class="text-xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/20 transition active:scale-90"><i class="fa-solid fa-arrow-right"></i></button>
+            <h2 class="text-xl font-bold flex-1 truncate" id="d-name">اسم الزبون</h2>
+        </header>
+        <div class="flex-1 overflow-y-auto p-4 pb-24">
+            <div class="bg-gradient-to-br from-primary to-secondary rounded-3xl p-6 text-white shadow-xl mb-6 relative overflow-hidden">
+                <i class="fa-solid fa-wallet absolute -left-4 -top-4 text-white/10 text-8xl"></i>
+                <p class="text-white/80 text-sm font-bold mb-1">المتبقي في ذمته</p>
+                <h3 class="text-4xl font-black mb-6 tracking-wider" id="d-balance" dir="ltr">0</h3>
+                <div class="flex gap-3 relative z-10">
+                    <button onclick="openSellModal()" class="flex-1 bg-white text-primary font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-cart-plus"></i> بيع مادة</button>
+                    <button onclick="openPayModal()" class="flex-1 bg-dark text-white font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition"><i class="fa-solid fa-money-bill-wave"></i> تسديد</button>
+                </div>
+            </div>
+            <h3 class="font-bold text-slate-700 mb-3 text-lg flex items-center gap-2 border-b border-slate-200 pb-2"><i class="fa-solid fa-clock-rotate-left text-primary"></i> سجل المعاملات</h3>
+            <div id="d-transactions" class="flex flex-col gap-3"></div>
+        </div>
+    </div>
+
+    <div id="sellModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 shadow-2xl transform translate-y-full sm:scale-95 transition-transform duration-300 modal-box-slide">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
+                <h3 class="text-xl font-bold text-primary"><i class="fa-solid fa-cart-shopping ml-2"></i>إضافة للزبون (بيع)</h3>
+                <button onclick="closeModal('sellModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div class="relative z-50">
+                    <label class="block text-sm font-bold text-slate-600 mb-1">اسم السلعة (أكتب حرف للبحث)</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="s-search" class="custom-input pr-10" placeholder="اكتب أول حرف..." oninput="searchInventory(this.value)" autocomplete="off">
+                    </div>
+                    <div id="s-dropdown" class="absolute w-full bg-white shadow-xl rounded-xl mt-1 border border-slate-100 max-h-48 overflow-y-auto hidden"></div>
+                </div>
+                
+                <div id="s-info" class="hidden bg-light border border-teal-100 rounded-2xl p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="font-bold text-primary text-sm" id="s-item-name"></span>
+                        <span class="text-xs font-bold bg-white px-2 py-1 rounded text-primary shadow-sm border border-teal-50">المخزون: <span id="s-item-stock" class="text-red-500">0</span></span>
+                    </div>
+                    <input type="hidden" id="s-item-id">
+                    <div class="flex gap-3 items-end">
+                        <div class="flex-1"><label class="block text-xs font-bold text-slate-500 mb-1">سعر البيع (د.ع)</label><input type="text" id="s-price" class="custom-input money-input text-left font-bold text-red-500" dir="ltr" oninput="calcTotal()"></div>
+                        <div class="w-20"><label class="block text-xs font-bold text-slate-500 mb-1">العدد</label><input type="number" id="s-qty" class="custom-input text-center" value="1" min="1" oninput="calcTotal()"></div>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-teal-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-500">الإجمالي المُضاف للديون:</span>
+                        <span class="font-black text-red-500 text-lg" id="s-total" dir="ltr">0</span>
+                    </div>
+                </div>
+
+                <button onclick="confirmSell()" class="w-full bg-primary text-white font-bold text-lg py-3 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> إضافة للسجل
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="payModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 shadow-2xl transform translate-y-full sm:scale-95 transition-transform duration-300 modal-box-slide">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
+                <h3 class="text-xl font-bold text-primary"><i class="fa-solid fa-money-bill-wave ml-2"></i>تسديد دفعة</h3>
+                <button onclick="closeModal('payModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="text-center mb-6 bg-slate-50 py-4 rounded-2xl border border-slate-100">
+                <p class="text-slate-500 text-sm font-bold mb-1">المتبقي عليه حالياً</p>
+                <h4 class="text-2xl font-black text-red-500" id="p-remain" dir="ltr">0</h4>
+            </div>
+            <div class="mb-6">
+                <label class="block text-center text-sm font-bold text-slate-600 mb-2">أدخل رقم المبلغ (دينار عراقي)</label>
+                <input type="text" id="p-amount" class="custom-input text-center text-3xl font-bold text-primary py-4 money-input" placeholder="0" dir="ltr">
+            </div>
+            <button onclick="confirmPay()" class="w-full bg-dark text-white font-bold text-lg py-3.5 rounded-xl shadow-lg hover:bg-primary transition active:scale-95 flex justify-center items-center gap-2">
+                <i class="fa-solid fa-check"></i> تأكيد التسديد
+            </button>
+        </div>
+    </div>
+
+    <div id="monthlySaleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300 modal-box">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-3">
+                <h3 class="text-xl font-bold text-primary" id="monthlySaleModalTitle">إضافة عملية بيع</h3>
+                <button onclick="closeModal('monthlySaleModal')" class="text-slate-400 hover:text-red-500 bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
+                <input type="hidden" id="ms-id">
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">اسم الزبون</label><input type="text" id="ms-c-name" class="custom-input"></div>
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">رقم الزبون</label><input type="tel" id="ms-phone" class="custom-input"></div>
+                <div><label class="block text-sm font-bold text-slate-600 mb-1">السعر</label><input type="text" id="ms-price" class="custom-input money-input font-bold" dir="ltr" placeholder="السعر يدوياً"></div>
+                
+                <div class="relative z-40">
+                    <label class="block text-sm font-bold text-slate-600 mb-1">البحث عن مادة من المخزون</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="ms-search" class="custom-input pr-10" placeholder="ابحث عن مادة..." oninput="searchMsInventory(this.value)" autocomplete="off">
+                    </div>
+                    <div id="ms-dropdown" class="absolute w-full bg-white shadow-xl rounded-xl mt-1 border border-slate-100 max-h-48 overflow-y-auto hidden"></div>
+                    <input type="hidden" id="ms-item-id">
+                </div>
+
+                <button onclick="saveMonthlySale()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-secondary transition active:scale-95 mt-4">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
