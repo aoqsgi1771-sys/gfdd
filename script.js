@@ -9,6 +9,11 @@ function saveData() {
     localStorage.setItem('almoamal_i_db', JSON.stringify(inventory));
     localStorage.setItem('almoamal_ms_db', JSON.stringify(monthlySales));
     updateAlertBadge();
+    
+    // المزامنة مع Firebase
+    if(window.firebaseSyncDb) {
+        window.firebaseSyncDb(customers, inventory, monthlySales);
+    }
 }
 
 // ================ تنسيق الأرقام بـ(نقطة الألف) ================
@@ -281,7 +286,6 @@ function searchInventory(val) {
     dropdown.innerHTML = '';
     if(!val.trim()) { dropdown.classList.add('hidden'); return; }
     
-    // فهرسة ذكية: تبحث إذا كانت المادة متوفرة وتحتوي على الحرف
     let matches = inventory.filter(i => i.name.includes(val) && i.qty > 0);
     if(matches.length > 0) {
         matches.forEach(m => {
@@ -329,13 +333,12 @@ function confirmSell() {
     let invIdx = inventory.findIndex(i => i.id == itemId);
     if(qty > inventory[invIdx].qty) return toastMsg('عذراً! الكمية المطلوبة غير متوفرة', 'error');
 
-    inventory[invIdx].qty -= qty; // الخصم من المخزون التلقائي
+    inventory[invIdx].qty -= qty; 
     
-    // إضافة السلعة وحساب السعر المكتوب لظهر الزبون
     activeCustomer.transactions.push({
         id: Date.now().toString(), type: 'sell', itemId, itemName: inventory[invIdx].name, price, qty, total: price * qty, date: new Date().toLocaleDateString('en-GB')
     });
-    activeCustomer.date = new Date().toISOString().split('T')[0]; // تصفير التنبيه
+    activeCustomer.date = new Date().toISOString().split('T')[0]; 
     
     saveData(); closeModal('sellModal'); updateDetails(); toastMsg('تم البيع والخصم من المخزون'); renderInventory();
 }
@@ -354,7 +357,7 @@ function confirmPay() {
     activeCustomer.transactions.push({
         id: Date.now().toString(), type: 'pay', amount: amt, date: new Date().toLocaleDateString('en-GB')
     });
-    activeCustomer.date = new Date().toISOString().split('T')[0]; // تصفير التنبيه
+    activeCustomer.date = new Date().toISOString().split('T')[0]; 
     
     saveData(); closeModal('payModal'); updateDetails(); toastMsg('تم استلام المبلغ');
 }
@@ -368,7 +371,7 @@ function renderAlerts() {
 
     customers.forEach(c => {
         let bal = getCustomerBalance(c);
-        if(bal > 0) { // يحسب الأيام فقط إذا كان عليه ديون
+        if(bal > 0) { 
             let diffDays = Math.floor((today - new Date(c.date).getTime()) / (1000 * 3600 * 24));
             if(diffDays >= c.alertDays) {
                 hasAlerts = true;
@@ -562,7 +565,6 @@ function clearMonthlySales() {
     });
 }
 
-// ================ أنيميشن البيع المباشر (3D) ================
 function showMaintenance() {
     let t = document.getElementById('maintenanceToast');
     let b = t.querySelector('.maintenance-3d-box');
@@ -572,7 +574,6 @@ function showMaintenance() {
         b.classList.add('show-3d');
     }, 10);
     
-    // إخفاء تلقائي بعد 3 ثواني
     setTimeout(() => {
         t.classList.remove('opacity-100');
         b.classList.remove('show-3d');
@@ -580,5 +581,12 @@ function showMaintenance() {
     }, 3000);
 }
 
-// الإقلاع
-window.onload = () => { renderCustomers(); updateAlertBadge(); renderMonthlySales(); };
+// الإقلاع وتحديث البيانات المجلوبة من قاعدة البيانات بعد تسجيل الدخول بنجاح
+window.initAppAfterAuth = () => { 
+    customers = JSON.parse(localStorage.getItem('almoamal_c_db')) || [];
+    inventory = JSON.parse(localStorage.getItem('almoamal_i_db')) || [];
+    monthlySales = JSON.parse(localStorage.getItem('almoamal_ms_db')) || [];
+    renderCustomers(); 
+    updateAlertBadge(); 
+    renderMonthlySales(); 
+};
