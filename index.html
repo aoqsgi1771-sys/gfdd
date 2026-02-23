@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
     <script>
         tailwind.config = {
             theme: {
@@ -345,6 +346,128 @@
             </div>
         </div>
     </div>
+
+    <div id="installOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl transform scale-95 transition-transform duration-300">
+            <i class="fa-solid fa-download text-5xl text-primary mb-4"></i>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">تثبيت التطبيق</h3>
+            <p class="text-slate-500 text-sm font-bold mb-6">قم بتثبيت التطبيق على جهازك للوصول السريع والعمل دون إنترنت.</p>
+            <div class="flex gap-3">
+                <button onclick="installPWA()" class="flex-1 bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition active:scale-95">تثبيت الآن</button>
+                <button onclick="closeInstallOverlay()" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-200 transition">لاحقاً</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="authOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl">
+            <h2 class="text-2xl font-bold text-primary mb-6"><i class="fa-solid fa-leaf text-teal-200 ml-2"></i>جمعية المؤمل</h2>
+            <button id="googleLoginBtn" class="w-full bg-red-500 text-white font-bold py-3 rounded-xl shadow-md hover:bg-red-600 transition flex justify-center items-center gap-2">
+                <i class="fa-brands fa-google"></i> تسجيل الدخول عبر جوجل
+            </button>
+            
+            <div id="pinSection" class="hidden mt-6 pt-6 border-t border-slate-100">
+                <label class="block text-sm font-bold text-slate-600 mb-2">أدخل رمز الدخول</label>
+                <input type="password" id="pinInput" class="custom-input text-center text-2xl tracking-[1em]" maxlength="4">
+                <button id="verifyPinBtn" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-secondary transition mt-4">
+                    تحقق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installOverlay = document.getElementById('installOverlay');
+        installOverlay.classList.remove('hidden');
+        setTimeout(() => installOverlay.classList.add('opacity-100'), 10);
+      });
+      function installPWA() {
+        closeInstallOverlay();
+        if(deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+        }
+      }
+      function closeInstallOverlay() {
+        const installOverlay = document.getElementById('installOverlay');
+        installOverlay.classList.remove('opacity-100');
+        setTimeout(() => installOverlay.classList.add('hidden'), 300);
+      }
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+      import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCds1pIEQ26U_K8EUc2YAYCC4MHDQoXL0k",
+        authDomain: "hhghh-8949e.firebaseapp.com",
+        projectId: "hhghh-8949e",
+        storageBucket: "hhghh-8949e.firebasestorage.app",
+        messagingSenderId: "945523777075",
+        appId: "1:945523777075:web:f0aa3630843c44fcdb0d46"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const provider = new GoogleAuthProvider();
+
+      const authOverlay = document.getElementById('authOverlay');
+      const googleLoginBtn = document.getElementById('googleLoginBtn');
+      const pinSection = document.getElementById('pinSection');
+      const pinInput = document.getElementById('pinInput');
+      const verifyPinBtn = document.getElementById('verifyPinBtn');
+
+      window.firebaseSyncDb = async function(c, i, ms) {
+        if(!auth.currentUser) return;
+        try {
+            await setDoc(doc(db, "appData", "mainData"), { customers: c, inventory: i, monthlySales: ms });
+        } catch(e) { console.error(e); }
+      };
+
+      googleLoginBtn.addEventListener('click', () => {
+          signInWithPopup(auth, provider).catch(err => console.error(err));
+      });
+
+      onAuthStateChanged(auth, (user) => {
+          if (user) {
+              googleLoginBtn.classList.add('hidden');
+              pinSection.classList.remove('hidden');
+          } else {
+              authOverlay.classList.remove('hidden');
+              googleLoginBtn.classList.remove('hidden');
+              pinSection.classList.add('hidden');
+          }
+      });
+
+      verifyPinBtn.addEventListener('click', async () => {
+          if(pinInput.value === '1001') {
+              try {
+                  const docSnap = await getDoc(doc(db, "appData", "mainData"));
+                  if(docSnap.exists()) {
+                      const data = docSnap.data();
+                      if(data.customers) localStorage.setItem('almoamal_c_db', JSON.stringify(data.customers));
+                      if(data.inventory) localStorage.setItem('almoamal_i_db', JSON.stringify(data.inventory));
+                      if(data.monthlySales) localStorage.setItem('almoamal_ms_db', JSON.stringify(data.monthlySales));
+                  }
+              } catch(e) { console.error(e); }
+              
+              authOverlay.classList.add('hidden');
+              if(window.initAppAfterAuth) window.initAppAfterAuth();
+          } else {
+              alert("الرمز غير صحيح");
+          }
+      });
+    </script>
 
     <script src="script.js"></script>
 </body>
